@@ -284,7 +284,6 @@ export default function App() {
             <h1 className="font-display text-lg font-extrabold text-[#f97316] tracking-widest leading-none">
               G-CORE
             </h1>
-            <p className="text-[9px] text-[#cfc2d6]/40 font-mono mt-1 font-semibold tracking-wider">COMMAND CENTER</p>
           </div>
         </div>
 
