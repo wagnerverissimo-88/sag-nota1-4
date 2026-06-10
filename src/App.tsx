@@ -68,6 +68,7 @@ export default function App() {
   const [editingGamer, setEditingGamer] = useState<Gamer | null>(null);
 
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
   
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [accountModalTab, setAccountModalTab] = useState<'ACCOUNT' | 'PREFS'>('ACCOUNT');
@@ -174,11 +175,20 @@ export default function App() {
 
   // Games database actions
   const handleSaveGame = (gameData: Omit<Game, 'id'>) => {
-    const newGame: Game = {
-      ...gameData,
-      id: 'game-' + Math.random().toString(36).substring(2, 9),
-    };
-    setGames((prev: Game[]) => [newGame, ...prev]);
+    if (editingGame) {
+      // Editing existing
+      setGames((prev: Game[]) =>
+        prev.map((g) => g.id === editingGame.id ? { ...gameData, id: editingGame.id } : g)
+      );
+    } else {
+      // Creating new
+      const newGame: Game = {
+        ...gameData,
+        id: 'game-' + Math.random().toString(36).substring(2, 9),
+      };
+      setGames((prev: Game[]) => [newGame, ...prev]);
+    }
+    setEditingGame(null);
     setIsGameModalOpen(false);
   };
 
@@ -188,6 +198,11 @@ export default function App() {
     if (confirm(`Deseja realmente remover "${game.name}" da biblioteca?`)) {
       setGames((prev: Game[]) => prev.filter((g) => g.id !== id));
     }
+  };
+
+  const handleTriggerEditGame = (game: Game) => {
+    setEditingGame(game);
+    setIsGameModalOpen(true);
   };
 
   // Color mapping logic for customized preference selections
@@ -462,7 +477,11 @@ export default function App() {
             {activeTab === 'GAMES' && (
               <GamesView
                 games={games}
-                onAddGameClick={() => setIsGameModalOpen(true)}
+                onAddGameClick={() => {
+                  setEditingGame(null);
+                  setIsGameModalOpen(true);
+                }}
+                onEditGameClick={handleTriggerEditGame}
                 onDeleteGameClick={handleDeleteGame}
                 colorsSet={colorsSet}
               />
@@ -599,11 +618,15 @@ export default function App() {
 
       {/* 4. Modals Overlay Mount points */}
 
-      {/* Add Game Modal overlay */}
+      {/* Add/Edit Game Modal overlay */}
       <GameModal
         isOpen={isGameModalOpen}
-        onClose={() => setIsGameModalOpen(false)}
+        onClose={() => {
+          setIsGameModalOpen(false);
+          setEditingGame(null);
+        }}
         onSave={handleSaveGame}
+        editingGame={editingGame}
         colorsSet={colorsSet}
       />
       

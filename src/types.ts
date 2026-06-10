@@ -21,34 +21,32 @@ export interface Gamer {
   age: number;
   preferredGame: string;
   category: GameCategory;
-  dailyFreeTime: number; 
+  platform: GamerPlatform;
+  dailyFreeTime: number;
 }
 
 export type AuthMode = 'LOGIN' | 'REGISTER' | 'FORGOT_PASSWORD';
 
 export type ActiveTab = 'DASHBOARD' | 'USERS' | 'GAMES' | 'CHATBOT';
 
-// Jogo salvo localmente pelo usuário
+export type GamerPlatform = 'PC' | 'PlayStation' | 'Xbox' | 'Nintendo Switch' | 'Mobile' | 'Multi-Plataforma';
+
+export const GAMER_PLATFORMS: GamerPlatform[] = [
+  'PC',
+  'PlayStation',
+  'Xbox',
+  'Nintendo Switch',
+  'Mobile',
+  'Multi-Plataforma',
+];
+
+// Jogo cadastrado manualmente pelo usuário
 export interface Game {
   id: string;
   name: string;
-  genre: string;
-  platforms: string[];
-  rating: number | null;
-  releaseYear: number | null;
-  coverUrl: string | null;
-  rawgId: number | null;
-}
-
-// Formato de resposta da RAWG API (autocomplete)
-export interface RawgGame {
-  id: number;
-  name: string;
-  background_image: string | null;
-  released: string | null;
-  rating: number;
-  genres: { id: number; name: string }[];
-  platforms: { platform: { id: number; name: string } }[] | null;
+  category: string;
+  rating: number | null; // Nota de 0 a 10
+  notes: string;         // Observações extras
 }
 
 export interface ChatMessage {
